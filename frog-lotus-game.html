@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frog Lotus Number Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .game-container {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            background: radial-gradient(circle at center, #87ceeb 0%, #4a90e2 100%);
+            border-radius: 50%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Water ripple effect */
+        .water-ripple {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: ripple 2s infinite;
+        }
+
+        .water-ripple:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .water-ripple:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .water-ripple:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Lotus leaves container */
+        .lotus-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Individual lotus leaf */
+        .lotus-leaf {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #2ecc71;
+            border-radius: 50% 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 3px solid #27ae60;
+        }
+
+        .lotus-leaf:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Position each lotus leaf in a circle */
+        .lotus-leaf:nth-child(1) { transform: translate(150px, 0); }
+        .lotus-leaf:nth-child(2) { transform: translate(75px, 130px); }
+        .lotus-leaf:nth-child(3) { transform: translate(-75px, 130px); }
+        .lotus-leaf:nth-child(4) { transform: translate(-150px, 0); }
+        .lotus-leaf:nth-child(5) { transform: translate(-75px, -130px); }
+        .lotus-leaf:nth-child(6) { transform: translate(75px, -130px); }
+
+        /* Frog center */
+        .frog {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #f39c12;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            cursor: pointer;
+            animation: frog-idle 2s infinite;
+        }
+
+        @keyframes frog-idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .frog.jumping {
+            animation: frog-jump 0.6s ease-out;
+        }
+
+        @keyframes frog-jump {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(0, -150px) scale(1.1);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        /* Winning animation */
+        .lotus-leaf.winner {
+            animation: leaf-glow 0.6s ease-out;
+        }
+
+        @keyframes leaf-glow {
+            0% {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px #f39c12, 0 0 50px #e67e22;
+            }
+            100% {
+                box-shadow: 0 0 20px #f39c12;
+            }
+        }
+
+        /* Result display */
+        .result-display {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 20;
+        }
+
+        .result-display.show {
+            display: block;
+            animation: result-pop 0.5s ease-out;
+        }
+
+        @keyframes result-pop {
+            0% {
+                transform: translateX(-50%) scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Button styles */
+        .button-container {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .play-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        /* Sparkle effect */
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle-fade 0.8s ease-out forwards;
+        }
+
+        @keyframes sparkle-fade {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="water-ripple"></div>
+        <div class="water-ripple"></div>
+        <div class="water-ripple"></div>
+
+        <div class="lotus-container">
+            <div class="lotus-leaf">1</div>
+            <div class="lotus-leaf">2</div>
+            <div class="lotus-leaf">3</div>
+            <div class="lotus-leaf">4</div>
+            <div class="lotus-leaf">5</div>
+            <div class="lotus-leaf">6</div>
+        </div>
+
+        <div class="frog">🐸</div>
+        <div class="result-display">Winner: <span id="winning-number">-</span></div>
+
+        <div class="button-container">
+            <button class="play-btn" id="playBtn">JUMP!</button>
+            <button class="reset-btn" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const frog = document.querySelector('.frog');
+        const leaves = document.querySelectorAll('.lotus-leaf');
+        const resultDisplay = document.querySelector('.result-display');
+        const winningNumberSpan = document.getElementById('winning-number');
+        const playBtn = document.getElementById('playBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        let isAnimating = false;
+
+        function createSparkles(leaf) {
+            const rect = leaf.getBoundingClientRect();
+            const containerRect = document.querySelector('.game-container').getBoundingClientRect();
+            
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+                sparkle.style.top = (rect.top - containerRect.top + rect.height / 2) + 'px';
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                sparkle.style.setProperty('--tx', tx + 'px');
+                sparkle.style.setProperty('--ty', ty + 'px');
+                
+                document.querySelector('.game-container').appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+
+        function playGame() {
+            if (isAnimating) return;
+            isAnimating = true;
+            playBtn.disabled = true;
+
+            // Remove previous winner class
+            leaves.forEach(leaf => leaf.classList.remove('winner'));
+            resultDisplay.classList.remove('show');
+
+            // Animate frog jumping
+            frog.classList.add('jumping');
+            setTimeout(() => frog.classList.remove('jumping'), 600);
+
+            // Select random winning leaf
+            const randomIndex = Math.floor(Math.random() * leaves.length);
+            const winningLeaf = leaves[randomIndex];
+            const winningNumber = winningLeaf.textContent;
+
+            // Display result after animation
+            setTimeout(() => {
+                winningLeaf.classList.add('winner');
+                createSparkles(winningLeaf);
+                resultDisplay.classList.add('show');
+                winningNumberSpan.textContent = winningNumber;
+                
+                isAnimating = false;
+                playBtn.disabled = false;
+            }, 600);
+
+            // Play sound effect (optional)
+            playSound();
+        }
+
+        function resetGame() {
+            leaves.forEach(leaf => leaf.classList.remove('winner'));
+            resultDisplay.classList.remove('show');
+            frog.classList.remove('jumping');
+            winningNumberSpan.textContent = '-';
+            isAnimating = false;
+            playBtn.disabled = false;
+        }
+
+        function playSound() {
+            // Simple beep sound using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        playBtn.addEventListener('click', playGame);
+        resetBtn.addEventListener('click', resetGame);
+
+        // Allow spacebar to play
+        document.addEventListener('keypress', (e) => {
+            if (e.key === ' ') {
+                e.preventDefault();
+                playGame();
+            }
+        });
+    </script>
+</body>
+</html>
