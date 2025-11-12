@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotus Frog Number Game</title>
+    <title>Professional Lotus Frog Game</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
@@ -14,29 +14,82 @@
         }
 
         body {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(180deg, #e8f4f8 0%, #c8e6f5 50%, #a8d8ea 100%);
+            font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #c8e6f5 0%, #a8d8ea 50%, #7ec8e3 100%);
-            font-family: 'Poppins', sans-serif;
             overflow: hidden;
         }
 
-        .game-container {
-            position: relative;
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(ellipse at 50% 40%, #b8e0f0 0%, #7ec8e3 50%, #4a9fb5 100%);
-            border-radius: 50%;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3), inset 0 -30px 60px rgba(0, 0, 0, 0.1);
+        .main-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px;
+        }
+
+        /* Game area */
+        .game-area {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            perspective: 1000px;
         }
 
-        /* Water ripples background */
-        .water-effect {
+        /* Floating background leaves */
+        .bg-leaf {
+            position: absolute;
+            opacity: 0.3;
+            animation: float-bg 8s infinite ease-in-out;
+        }
+
+        .bg-leaf:nth-child(1) { width: 80px; top: 10%; left: 5%; animation-delay: 0s; }
+        .bg-leaf:nth-child(2) { width: 60px; top: 20%; right: 8%; animation-delay: 1s; }
+        .bg-leaf:nth-child(3) { width: 100px; bottom: 15%; left: 10%; animation-delay: 2s; }
+        .bg-leaf:nth-child(4) { width: 70px; bottom: 10%; right: 5%; animation-delay: 1.5s; }
+
+        @keyframes float-bg {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* Main game container */
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(ellipse at 50% 40%, #b8e0f0 0%, #7ec8e3 50%, #4a9fb5 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 40px 100px rgba(0, 0, 0, 0.2),
+                inset 0 -40px 60px rgba(0, 0, 0, 0.1),
+                inset 0 40px 60px rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+        }
+
+        /* Water surface detail */
+        .water-detail {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.05) 0%, transparent 50%);
+        }
+
+        /* Ripple effect */
+        .ripple-container {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -46,328 +99,315 @@
 
         .ripple {
             position: absolute;
-            border: 2px solid rgba(100, 200, 220, 0.3);
+            border: 1px solid rgba(100, 200, 220, 0.25);
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            animation: ripple-wave 3s infinite ease-out;
+            animation: ripple-expand 4s infinite ease-out;
         }
 
         .ripple:nth-child(1) { animation-delay: 0s; }
-        .ripple:nth-child(2) { animation-delay: 1s; }
-        .ripple:nth-child(3) { animation-delay: 2s; }
+        .ripple:nth-child(2) { animation-delay: 1.3s; }
+        .ripple:nth-child(3) { animation-delay: 2.6s; }
 
-        @keyframes ripple-wave {
+        @keyframes ripple-expand {
             0% {
                 width: 50px;
                 height: 50px;
                 opacity: 1;
             }
             100% {
-                width: 600px;
-                height: 600px;
+                width: 700px;
+                height: 700px;
                 opacity: 0;
             }
         }
 
-        /* Lotus leaves container */
-        .lotus-leaves-container {
+        /* Leaves scattered around */
+        .leaves-container {
             position: absolute;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* Individual lotus leaf styling */
         .lotus-leaf {
             position: absolute;
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             background: linear-gradient(135deg, #a8d946 0%, #7cbc3e 50%, #5a9d3d 100%);
             border-radius: 50% 0% 50% 50%;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 56px;
+            font-size: 52px;
             font-weight: 800;
             color: white;
             text-shadow: 
                 -2px -2px 4px rgba(0, 0, 0, 0.3),
                 2px 2px 4px rgba(0, 0, 0, 0.2);
             box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.25),
-                inset -5px -5px 15px rgba(0, 0, 0, 0.2),
-                inset 5px 5px 15px rgba(255, 255, 255, 0.3);
+                0 15px 40px rgba(0, 0, 0, 0.25),
+                inset -8px -8px 20px rgba(0, 0, 0, 0.15),
+                inset 8px 8px 20px rgba(255, 255, 255, 0.2);
             border: 4px solid #ff69b4;
-            transform-style: preserve-3d;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
+            z-index: 2;
         }
 
-        /* Leaf shine effect */
+        /* Leaf shine */
         .lotus-leaf::before {
             content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
             border-radius: inherit;
             pointer-events: none;
         }
 
-        /* Leaf water droplets */
+        /* Leaf droplets */
         .lotus-leaf::after {
             content: '';
             position: absolute;
-            width: 25px;
-            height: 25px;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1));
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
             border-radius: 50%;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             box-shadow: 
-                inset -2px -2px 5px rgba(0, 0, 0, 0.2),
-                20px 30px 0 8px rgba(255, 255, 255, 0.2);
+                inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+                15px 25px 0 6px rgba(255, 255, 255, 0.25);
         }
 
         .lotus-leaf:hover {
-            transform: translateY(-15px) scale(1.08);
+            transform: scale(1.12) translateY(-15px);
             box-shadow: 
-                0 15px 40px rgba(0, 0, 0, 0.35),
-                0 0 30px rgba(255, 105, 180, 0.4),
-                inset -5px -5px 15px rgba(0, 0, 0, 0.2),
-                inset 5px 5px 15px rgba(255, 255, 255, 0.4);
+                0 20px 50px rgba(0, 0, 0, 0.35),
+                0 0 40px rgba(255, 105, 180, 0.5),
+                inset -8px -8px 20px rgba(0, 0, 0, 0.15),
+                inset 8px 8px 20px rgba(255, 255, 255, 0.35);
         }
 
-        /* Position leaves around frog */
-        .lotus-leaf:nth-child(1) { transform: translate(200px, -80px) rotate(-60deg); }
-        .lotus-leaf:nth-child(2) { transform: translate(200px, 80px) rotate(30deg); }
-        .lotus-leaf:nth-child(3) { transform: translate(-200px, -80px) rotate(-120deg); }
-        .lotus-leaf:nth-child(4) { transform: translate(-200px, 80px) rotate(150deg); }
-        .lotus-leaf:nth-child(5) { transform: translate(0px, -200px) rotate(-90deg); }
-        .lotus-leaf:nth-child(6) { transform: translate(0px, 200px) rotate(90deg); }
+        /* Scattered positioning */
+        .lotus-leaf:nth-child(1) { 
+            top: 15%;
+            right: 12%;
+            transform: rotate(-20deg);
+        }
+        .lotus-leaf:nth-child(2) { 
+            top: 25%;
+            left: 15%;
+            transform: rotate(35deg);
+        }
+        .lotus-leaf:nth-child(3) { 
+            top: 50%;
+            left: 8%;
+            transform: rotate(-45deg);
+        }
+        .lotus-leaf:nth-child(4) { 
+            bottom: 20%;
+            left: 18%;
+            transform: rotate(60deg);
+        }
+        .lotus-leaf:nth-child(5) { 
+            bottom: 18%;
+            right: 10%;
+            transform: rotate(-50deg);
+        }
+        .lotus-leaf:nth-child(6) { 
+            top: 55%;
+            right: 8%;
+            transform: rotate(30deg);
+        }
 
-        /* Frog styling */
-        .frog-wrapper {
+        /* Center frog - LARGE AND PROMINENT */
+        .frog-center {
             position: absolute;
             z-index: 50;
             cursor: pointer;
+            animation: frog-breathe 3s ease-in-out infinite;
         }
 
-        .frog {
-            width: 150px;
-            height: 120px;
-            position: relative;
-            animation: frog-idle 2.5s ease-in-out infinite;
-        }
-
-        @keyframes frog-idle {
+        @keyframes frog-breathe {
             0%, 100% { transform: scale(1) translateY(0); }
-            50% { transform: scale(1.02) translateY(-8px); }
+            50% { transform: scale(1.05) translateY(-10px); }
         }
 
-        /* Frog body */
         .frog-body {
-            width: 120px;
-            height: 100px;
+            width: 180px;
+            height: 150px;
             background: linear-gradient(180deg, #7eca3b 0%, #5aa831 50%, #4a9428 100%);
-            border-radius: 60% 60% 45% 45%;
+            border-radius: 55% 55% 45% 45%;
             position: relative;
             box-shadow: 
-                0 12px 25px rgba(0, 0, 0, 0.3),
-                inset -8px -8px 15px rgba(0, 0, 0, 0.25),
-                inset 8px 8px 15px rgba(255, 255, 255, 0.2);
-            margin: 0 auto;
+                0 20px 50px rgba(0, 0, 0, 0.4),
+                inset -12px -12px 25px rgba(0, 0, 0, 0.25),
+                inset 12px 12px 25px rgba(255, 255, 255, 0.2);
         }
 
-        /* Frog belly */
         .frog-belly {
             position: absolute;
-            width: 70px;
-            height: 60px;
+            width: 100px;
+            height: 85px;
             background: linear-gradient(180deg, #c4e89c 0%, #a8d968 100%);
-            border-radius: 50% 50% 40% 40%;
-            bottom: 15px;
+            border-radius: 50%;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Frog eyes */
         .frog-eyes {
             position: absolute;
             width: 100%;
             display: flex;
             justify-content: space-around;
-            padding: 0 20px;
-            top: 15px;
+            padding: 0 25px;
+            top: 20px;
             z-index: 2;
         }
 
         .eye {
-            width: 35px;
-            height: 42px;
+            width: 45px;
+            height: 55px;
             background: linear-gradient(135deg, #fff 0%, #e8e8e8 100%);
             border-radius: 50%;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .eye::after {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #333;
-            border-radius: 50%;
-            top: 12px;
-            left: 10px;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 6px 15px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.5);
         }
 
         .iris {
-            width: 20px;
-            height: 28px;
+            width: 28px;
+            height: 38px;
             background: #ff8c00;
             border-radius: 50%;
             position: absolute;
-            top: 8px;
-            left: 7px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+            top: 10px;
+            left: 8px;
+            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.4);
         }
 
         .iris::after {
             content: '';
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             background: white;
             border-radius: 50%;
-            top: 5px;
-            left: 5px;
-            opacity: 0.7;
+            top: 8px;
+            left: 8px;
+            opacity: 0.8;
         }
 
-        /* Frog mouth */
         .frog-mouth {
             position: absolute;
-            width: 35px;
-            height: 12px;
+            width: 45px;
+            height: 15px;
             border: 2px solid rgba(0, 0, 0, 0.3);
             border-top: none;
             border-radius: 0 0 50% 50%;
-            bottom: 45px;
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Frog legs */
         .frog-legs {
             position: absolute;
-            bottom: -8px;
+            bottom: 0px;
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 0 10px;
+            gap: 30px;
+            padding: 0 15px;
         }
 
         .leg {
-            width: 30px;
-            height: 25px;
+            width: 38px;
+            height: 32px;
             background: linear-gradient(135deg, #5aa831 0%, #4a9428 100%);
             border-radius: 50%;
             position: relative;
-            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.25);
         }
 
         .leg::after {
             content: '';
             position: absolute;
-            width: 35px;
-            height: 12px;
+            width: 42px;
+            height: 16px;
             background: linear-gradient(180deg, #ff8c00, #ff6b00);
             border-radius: 50%;
-            position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         /* Jump animation */
-        .frog.jumping {
-            animation: frog-jump 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        .frog-body.jumping {
+            animation: frog-jump-3d 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        @keyframes frog-jump {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            25% {
-                transform: translate(0, -60px) scale(0.95);
-            }
-            50% {
-                transform: translate(0, -120px) scale(0.9);
-            }
-            75% {
-                transform: translate(0, -80px) scale(0.92);
-            }
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
+        @keyframes frog-jump-3d {
+            0% { transform: scale(1) translateY(0) rotateX(0deg); }
+            15% { transform: scale(1.1, 0.85) translateY(0) rotateX(0deg); }
+            40% { transform: scale(1.05) translateY(-150px) rotateX(-20deg); }
+            65% { transform: scale(1) translateY(-180px) rotateX(-25deg); }
+            85% { transform: scale(1) translateY(-100px) rotateX(-15deg); }
+            100% { transform: scale(1) translateY(0) rotateX(0deg); }
         }
 
-        /* Leaf winner animation */
+        /* Winner leaf effect */
         .lotus-leaf.winner {
-            animation: leaf-winner 1.2s ease-out forwards;
+            animation: leaf-winner-burst 1.3s ease-out forwards !important;
         }
 
-        @keyframes leaf-winner {
+        @keyframes leaf-winner-burst {
             0% {
                 box-shadow: 
-                    0 10px 30px rgba(0, 0, 0, 0.25),
-                    inset -5px -5px 15px rgba(0, 0, 0, 0.2),
-                    inset 5px 5px 15px rgba(255, 255, 255, 0.3);
+                    0 15px 40px rgba(0, 0, 0, 0.25),
+                    inset -8px -8px 20px rgba(0, 0, 0, 0.15);
             }
-            50% {
+            40% {
+                transform: scale(1.25) !important;
+                box-shadow: 
+                    0 0 80px rgba(255, 215, 0, 1),
+                    0 0 120px rgba(255, 165, 0, 0.9),
+                    0 25px 50px rgba(0, 0, 0, 0.5);
+            }
+            100% {
                 transform: scale(1.15) !important;
                 box-shadow: 
-                    0 0 60px rgba(255, 215, 0, 1),
-                    0 0 90px rgba(255, 165, 0, 0.8),
-                    0 20px 40px rgba(0, 0, 0, 0.4),
-                    inset 0 0 30px rgba(255, 215, 0, 0.6);
-            }
-            100% {
-                transform: scale(1.1) !important;
-                box-shadow: 
-                    0 0 40px rgba(255, 215, 0, 0.8),
-                    0 0 60px rgba(255, 165, 0, 0.6),
-                    0 15px 35px rgba(0, 0, 0, 0.3),
-                    inset 0 0 20px rgba(255, 215, 0, 0.4);
+                    0 0 50px rgba(255, 215, 0, 0.8),
+                    0 0 80px rgba(255, 165, 0, 0.6),
+                    0 20px 40px rgba(0, 0, 0, 0.3);
             }
         }
 
-        /* Golden particles */
+        /* Particle effects */
         .particle {
             position: absolute;
             pointer-events: none;
-            animation: particle-burst 1.2s ease-out forwards;
+            z-index: 1;
         }
 
         .particle-inner {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: radial-gradient(circle at 30% 30%, #ffd700, #ff8c00);
             border-radius: 50%;
-            box-shadow: 0 0 15px #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            animation: particle-fly 1.2s ease-out forwards;
         }
 
-        @keyframes particle-burst {
+        @keyframes particle-fly {
             0% {
                 opacity: 1;
                 transform: translate(0, 0) scale(1);
@@ -379,69 +419,69 @@
         }
 
         /* Result display */
-        .result-container {
+        .result-box {
             position: absolute;
-            top: -80px;
+            top: -100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 40px;
-            border-radius: 30px;
-            border: 3px solid #ff69b4;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 25px 50px;
+            border-radius: 40px;
+            border: 4px solid #ff69b4;
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 105, 180, 0.3);
             opacity: 0;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             text-align: center;
+            z-index: 100;
         }
 
-        .result-container.show {
+        .result-box.show {
             opacity: 1;
-            top: -70px;
+            top: -85px;
         }
 
         .result-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #ff69b4;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
-        .result-number {
-            font-size: 52px;
+        .result-num {
+            font-size: 60px;
             font-weight: 800;
             color: #ff69b4;
-            text-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+            text-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
         }
 
-        /* Control buttons */
-        .controls {
-            position: absolute;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
+        /* Bottom controls */
+        .controls-section {
             display: flex;
-            gap: 25px;
+            justify-content: center;
+            gap: 30px;
         }
 
-        .btn {
-            padding: 16px 45px;
+        .btn-primary {
+            padding: 18px 50px;
             font-size: 16px;
             font-weight: 700;
             border: none;
-            border-radius: 50px;
+            border-radius: 60px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .btn::before {
+        .btn-primary::before {
             content: '';
             position: absolute;
             top: 0;
@@ -449,10 +489,11 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.3);
-            transition: left 0.5s;
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1;
         }
 
-        .btn:hover::before {
+        .btn-primary:hover::before {
             left: 100%;
         }
 
@@ -462,8 +503,8 @@
         }
 
         .btn-play:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(255, 107, 157, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px rgba(255, 107, 157, 0.5);
         }
 
         .btn-play:disabled {
@@ -477,118 +518,107 @@
         }
 
         .btn-reset:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(168, 217, 70, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px rgba(168, 217, 70, 0.5);
         }
 
-        .btn span {
+        .btn-primary span {
             position: relative;
-            z-index: 1;
-        }
-
-        /* Splash effect */
-        .splash {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, rgba(100, 200, 220, 0.6), transparent);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: splash-animate 0.8s ease-out forwards;
-        }
-
-        @keyframes splash-animate {
-            0% {
-                transform: scale(0.3);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(3);
-                opacity: 0;
-            }
+            z-index: 2;
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .game-container {
-                width: 500px;
-                height: 500px;
+                width: 450px;
+                height: 450px;
             }
 
             .lotus-leaf {
-                width: 100px;
-                height: 100px;
-                font-size: 42px;
+                width: 90px;
+                height: 90px;
+                font-size: 40px;
             }
 
-            .frog {
-                width: 110px;
-                height: 90px;
+            .frog-body {
+                width: 130px;
+                height: 110px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- Water ripples -->
-        <div class="water-effect">
-            <div class="ripple"></div>
-            <div class="ripple"></div>
-            <div class="ripple"></div>
-        </div>
+    <div class="main-wrapper">
+        <!-- Background floating leaves -->
+        <div class="bg-leaf" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%237cbc3e%22 d=%22M50,0Q100,0 100,50Q100,100 50,100Q0,100 0,50Q0,0 50,0%22/></svg>');"></div>
+        <div class="bg-leaf" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%237cbc3e%22 d=%22M50,0Q100,0 100,50Q100,100 50,100Q0,100 0,50Q0,0 50,0%22/></svg>');"></div>
+        <div class="bg-leaf" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%237cbc3e%22 d=%22M50,0Q100,0 100,50Q100,100 50,100Q0,100 0,50Q0,0 50,0%22/></svg>');"></div>
+        <div class="bg-leaf" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%237cbc3e%22 d=%22M50,0Q100,0 100,50Q100,100 50,100Q0,100 0,50Q0,0 50,0%22/></svg>');"></div>
 
-        <!-- Lotus leaves -->
-        <div class="lotus-leaves-container">
-            <div class="lotus-leaf">1</div>
-            <div class="lotus-leaf">2</div>
-            <div class="lotus-leaf">3</div>
-            <div class="lotus-leaf">4</div>
-            <div class="lotus-leaf">5</div>
-            <div class="lotus-leaf">6</div>
-        </div>
-
-        <!-- Frog -->
-        <div class="frog-wrapper">
-            <div class="frog">
-                <div class="frog-body">
-                    <div class="frog-belly"></div>
-                    <div class="frog-eyes">
-                        <div class="eye">
-                            <div class="iris"></div>
-                        </div>
-                        <div class="eye">
-                            <div class="iris"></div>
-                        </div>
-                    </div>
-                    <div class="frog-mouth"></div>
+        <!-- Main game area -->
+        <div class="game-area">
+            <div class="game-container">
+                <div class="water-detail"></div>
+                
+                <div class="ripple-container">
+                    <div class="ripple"></div>
+                    <div class="ripple"></div>
+                    <div class="ripple"></div>
                 </div>
-                <div class="frog-legs">
-                    <div class="leg"></div>
-                    <div class="leg"></div>
-                    <div class="leg"></div>
+
+                <div class="leaves-container">
+                    <div class="lotus-leaf">1</div>
+                    <div class="lotus-leaf">2</div>
+                    <div class="lotus-leaf">3</div>
+                    <div class="lotus-leaf">4</div>
+                    <div class="lotus-leaf">5</div>
+                    <div class="lotus-leaf">6</div>
+                </div>
+
+                <div class="frog-center">
+                    <div class="frog-body">
+                        <div class="frog-belly"></div>
+                        <div class="frog-eyes">
+                            <div class="eye">
+                                <div class="iris"></div>
+                            </div>
+                            <div class="eye">
+                                <div class="iris"></div>
+                            </div>
+                        </div>
+                        <div class="frog-mouth"></div>
+                    </div>
+                    <div class="frog-legs">
+                        <div class="leg"></div>
+                        <div class="leg"></div>
+                        <div class="leg"></div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-label">🎯 Winning Number</div>
+                    <div class="result-num">-</div>
                 </div>
             </div>
         </div>
 
-        <!-- Result display -->
-        <div class="result-container">
-            <div class="result-label">🎉 Winning Number 🎉</div>
-            <div class="result-number">-</div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <button class="btn btn-play" id="playBtn">▶ PLAY</button>
-            <button class="btn btn-reset" id="resetBtn">⟲ RESET</button>
+        <!-- Control buttons -->
+        <div class="controls-section">
+            <button class="btn-primary btn-play" id="playBtn">
+                <span>▶ PLAY NOW</span>
+            </button>
+            <button class="btn-primary btn-reset" id="resetBtn">
+                <span>⟲ RESET</span>
+            </button>
         </div>
     </div>
 
     <script>
-        const frog = document.querySelector('.frog');
-        const frogWrapper = document.querySelector('.frog-wrapper');
+        const frogBody = document.querySelector('.frog-body');
+        const frogCenter = document.querySelector('.frog-center');
         const leaves = document.querySelectorAll('.lotus-leaf');
-        const resultContainer = document.querySelector('.result-container');
-        const resultNumber = document.querySelector('.result-number');
+        const resultBox = document.querySelector('.result-box');
+        const resultNum = document.querySelector('.result-num');
         const playBtn = document.getElementById('playBtn');
         const resetBtn = document.getElementById('resetBtn');
         const gameContainer = document.querySelector('.game-container');
@@ -596,14 +626,12 @@
         let isAnimating = false;
         let audioContext;
 
-        // Initialize audio
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
 
-        // Play jump sound
         function playJumpSound() {
             initAudio();
             const osc = audioContext.createOscillator();
@@ -612,21 +640,20 @@
             osc.connect(gain);
             gain.connect(audioContext.destination);
 
-            osc.frequency.setValueAtTime(600, audioContext.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+            osc.frequency.setValueAtTime(700, audioContext.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.2);
             osc.type = 'sine';
 
             gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0, audioContext.currentTime + 0.15);
+            gain.gain.exponentialRampToValueAtTime(0, audioContext.currentTime + 0.2);
 
             osc.start(audioContext.currentTime);
-            osc.stop(audioContext.currentTime + 0.15);
+            osc.stop(audioContext.currentTime + 0.2);
         }
 
-        // Play winner sound
         function playWinnerSound() {
             initAudio();
-            const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+            const notes = [523.25, 659.25, 783.99, 1046.5];
 
             notes.forEach((freq, i) => {
                 const osc = audioContext.createOscillator();
@@ -638,21 +665,20 @@
                 osc.frequency.value = freq;
                 osc.type = 'sine';
 
-                const time = audioContext.currentTime + (i * 0.1);
-                gain.gain.setValueAtTime(0.2, time);
-                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+                const time = audioContext.currentTime + (i * 0.12);
+                gain.gain.setValueAtTime(0.25, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.35);
 
                 osc.start(time);
-                osc.stop(time + 0.3);
+                osc.stop(time + 0.35);
             });
         }
 
-        // Create golden particles
         function createParticles(leaf) {
             const rect = leaf.getBoundingClientRect();
             const containerRect = gameContainer.getBoundingClientRect();
 
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 18; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
 
@@ -662,96 +688,68 @@
                 particle.style.left = x + 'px';
                 particle.style.top = y + 'px';
 
-                const angle = (i / 15) * Math.PI * 2;
-                const distance = 100 + Math.random() * 60;
+                const angle = (i / 18) * Math.PI * 2;
+                const distance = 120 + Math.random() * 80;
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
 
                 particle.style.setProperty('--tx', tx + 'px');
                 particle.style.setProperty('--ty', ty + 'px');
-                particle.style.setProperty('--delay', (i * 0.05) + 's');
 
                 const inner = document.createElement('div');
                 inner.className = 'particle-inner';
                 particle.appendChild(inner);
 
                 gameContainer.appendChild(particle);
-
                 setTimeout(() => particle.remove(), 1200);
             }
         }
 
-        // Create splash
-        function createSplash() {
-            const splash = document.createElement('div');
-            splash.className = 'splash';
-            splash.style.left = '350px';
-            splash.style.top = '350px';
-            gameContainer.appendChild(splash);
-            setTimeout(() => splash.remove(), 800);
-        }
-
-        // Main game function
         async function playGame() {
             if (isAnimating) return;
 
             isAnimating = true;
             playBtn.disabled = true;
 
-            // Reset previous winners
             leaves.forEach(leaf => leaf.classList.remove('winner'));
-            resultContainer.classList.remove('show');
+            resultBox.classList.remove('show');
 
-            // Play sounds and effects
             playJumpSound();
-            createSplash();
+            frogBody.classList.add('jumping');
 
-            // Animate frog jump
-            frog.classList.add('jumping');
-
-            // Select random winner
             const randomIndex = Math.floor(Math.random() * 6);
             const winningLeaf = leaves[randomIndex];
             const winningNum = winningLeaf.textContent;
 
-            // Wait for animation
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            // Show winner
-            frog.classList.remove('jumping');
+            frogBody.classList.remove('jumping');
             winningLeaf.classList.add('winner');
             createParticles(winningLeaf);
             playWinnerSound();
 
-            // Display result
-            resultNumber.textContent = winningNum;
-            resultContainer.classList.add('show');
+            resultNum.textContent = winningNum;
+            resultBox.classList.add('show');
 
-            // Allow next game
             setTimeout(() => {
                 isAnimating = false;
                 playBtn.disabled = false;
-            }, 1000);
+            }, 1200);
         }
 
-        // Reset game
         function resetGame() {
             leaves.forEach(leaf => leaf.classList.remove('winner'));
-            resultContainer.classList.remove('show');
-            frog.classList.remove('jumping');
-            resultNumber.textContent = '-';
+            resultBox.classList.remove('show');
+            frogBody.classList.remove('jumping');
+            resultNum.textContent = '-';
             isAnimating = false;
             playBtn.disabled = false;
         }
 
-        // Event listeners
         playBtn.addEventListener('click', playGame);
         resetBtn.addEventListener('click', resetGame);
-        frogWrapper.addEventListener('click', () => {
-            if (!isAnimating) playGame();
-        });
+        frogCenter.addEventListener('click', () => !isAnimating && playGame());
 
-        // Keyboard support
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !isAnimating) {
                 e.preventDefault();
@@ -759,11 +757,10 @@
             }
         });
 
-        // Click leaves directly
         leaves.forEach(leaf => {
             leaf.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (!isAnimating) playGame();
+                !isAnimating && playGame();
             });
         });
     </script>
